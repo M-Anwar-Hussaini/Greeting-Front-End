@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchGreeting } from '../redux/greetingSlice';
 
 export default function Greeting() {
-  const [greeting, setGreeting] = useState('');
-  const [isLoaing, setIsLoading] = useState(false);
-  const [flag, setFlag] = useState(1);
+  const { greeting } = useSelector((store) => store.greeting);
+  const dispatch = useDispatch();
   useEffect(() => {
-    async function fetchGreeting() {
-      setIsLoading(true);
-      const res = await fetch(
-        'http://localhost:3000/api/v1/greeting/random_greeting',
-      );
-      const data = await res.json();
-      setGreeting(data.greeting);
-      setIsLoading(false);
-    }
-    fetchGreeting();
-  }, [flag]);
+    dispatch(fetchGreeting());
+  }, [dispatch]);
+
   return (
     <>
-      <h1>{isLoaing ? <>Loading...</> : greeting}</h1>
-      <button type="button" onClick={() => setFlag((flag) => 1 - flag)}>
+      <h1>{greeting}</h1>
+      <button type="button" onClick={() => dispatch(fetchGreeting())}>
         New Greeting
       </button>
     </>
